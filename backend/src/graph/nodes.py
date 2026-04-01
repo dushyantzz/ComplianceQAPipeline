@@ -82,16 +82,22 @@ def audit_content_node(state: VideoAuditState) -> Dict[str, Any]:
             "final_report": "Audit skipped because video processing failed (No Transcript)."
         }
 
-    # Initialize Clients
+    # Initialize Clients (deployment names must match Azure AI Foundry / OpenAI resource)
     llm = AzureChatOpenAI(
         azure_deployment=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT"),
+        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
         openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-        temperature=0.0
+        temperature=0.0,
     )
 
     embeddings = AzureOpenAIEmbeddings(
-        azure_deployment="text-embedding-3-small",
-        openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+        azure_deployment=os.getenv(
+            "AZURE_OPENAI_EMBEDDING_DEPLOYMENT", "text-embedding-3-small"
+        ),
+        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+        openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION", "2024-02-01"),
     )
 
     vector_store = AzureSearch(
