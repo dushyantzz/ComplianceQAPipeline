@@ -4,10 +4,14 @@ import logging
 import re  # <--- Added Regex for cleaning
 from typing import Dict, Any, List
 
+from openai import NotFoundError as OpenAINotFoundError
+from azure.core.credentials import AzureKeyCredential
+from azure.search.documents import SearchClient
 from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
 from langchain_community.vectorstores import AzureSearch
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.documents import Document
 
 # Import the State schema .
 from backend.src.graph.state import VideoAuditState, ComplianceIssue
@@ -18,6 +22,44 @@ from backend.src.services.video_indexer import VideoIndexerService
 # Configure Logger
 logger = logging.getLogger("brand-guardian")
 logging.basicConfig(level=logging.INFO)
+
+_KEYWORD_QUERY_MAX_CHARS = 12000
+
+
+def _keyword_search_rules(query_text: str, k: int = 3) -> List[Document]:
+    """
+    Full-text search on Azure AI Search when no embedding deployment is available.
+    Uses the same default content field as LangChain's AzureSearch ("content").
+    """
+    endpoint = (os.getenv("AZURE_SEARCH_ENDPOINT") or "").rstrip("/")
+    key = os.getenv("AZURE_SEARCH_API_KEY")
+    index_name = os.getenv("AZURE_SEARCH_INDEX_NAME")
+    if not (endpoint and key and index_name):
+        logger.warning("Azure Search configuration missing; cannot retrieve rules.")
+        return []
+
+    q = query_text[:_KEYWORD_QUERY_MAX_CHARS] if query_text else "*"
+    client = SearchClient(
+        endpoint=endpoint,
+        index_name=index_name,
+        credential=AzureKeyCredential(key),
+    )
+    try:
+        results = client.search(search_text=q, top=k, select=["id", "content"])
+    except Exception as e:
+        logger.error("Azure AI Search keyword query failed: %s", e)
+        return []
+
+    docs: List[Document] = []
+    for r in results:
+        docs.append(
+            Document(
+                page_content=(r.get("content") or ""),
+                metadata={"id": r.get("id")},
+            )
+        )
+    return docs
+
 
 # --- NODE 1: THE INDEXER ---
 def index_video_node(state: VideoAuditState) -> Dict[str, Any]:
@@ -91,26 +133,41 @@ def audit_content_node(state: VideoAuditState) -> Dict[str, Any]:
         temperature=0.0,
     )
 
-    embeddings = AzureOpenAIEmbeddings(
-        azure_deployment=os.getenv(
-            "AZURE_OPENAI_EMBEDDING_DEPLOYMENT", "text-embedding-3-small"
-        ),
-        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-        openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION", "2024-02-01"),
+    embedding_deployment = os.getenv(
+        "AZURE_OPENAI_EMBEDDING_DEPLOYMENT", "text-embedding-3-small"
     )
-
-    vector_store = AzureSearch(
-        azure_search_endpoint=os.getenv("AZURE_SEARCH_ENDPOINT"),
-        azure_search_key=os.getenv("AZURE_SEARCH_API_KEY"),
-        index_name=os.getenv("AZURE_SEARCH_INDEX_NAME"),
-        embedding_function=embeddings.embed_query
-    )
-    
-    # RAG Retrieval
     ocr_text = state.get("ocr_text", [])
     query_text = f"{transcript} {' '.join(ocr_text)}"
-    docs = vector_store.similarity_search(query_text, k=3)
+
+    docs: List[Document] = []
+    try:
+        embeddings = AzureOpenAIEmbeddings(
+            azure_deployment=embedding_deployment,
+            azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+            api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+            openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION", "2024-02-01"),
+        )
+        dims_env = os.getenv("AZURE_SEARCH_VECTOR_DIMENSIONS")
+        dims = int(dims_env) if dims_env else len(embeddings.embed_query("ping"))
+
+        vector_store = AzureSearch(
+            azure_search_endpoint=os.getenv("AZURE_SEARCH_ENDPOINT"),
+            azure_search_key=os.getenv("AZURE_SEARCH_API_KEY"),
+            index_name=os.getenv("AZURE_SEARCH_INDEX_NAME"),
+            embedding_function=embeddings.embed_query,
+            vector_search_dimensions=dims,
+        )
+        docs = vector_store.similarity_search(query_text, k=3)
+    except OpenAINotFoundError:
+        logger.warning(
+            "Embedding deployment %r not found on this OpenAI resource (404). "
+            "Using keyword search. Fix: deploy embeddings on the SAME resource as "
+            "AZURE_OPENAI_ENDPOINT, or set AZURE_OPENAI_EMBEDDING_DEPLOYMENT to the real name.",
+            embedding_deployment,
+        )
+        docs = _keyword_search_rules(query_text, k=3)
+
+    # RAG Retrieval (vector or keyword fallback)
     
     retrieved_rules = "\n\n".join([doc.page_content for doc in docs])
     
