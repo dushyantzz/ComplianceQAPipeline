@@ -13,7 +13,7 @@ class VideoIndexerService:
         self.location = os.getenv("AZURE_VI_LOCATION")
         self.subscription_id = os.getenv("AZURE_SUBSCRIPTION_ID")
         self.resource_group = os.getenv("AZURE_RESOURCE_GROUP")
-        self.vi_name = os.getenv("AZURE_VI_NAME", "project-brand-guardian-001")
+        self.vi_name = os.getenv("AZURE_VI_NAME", "llmop-yt-proj")
         self.credential = DefaultAzureCredential()
 
     def get_access_token(self):
