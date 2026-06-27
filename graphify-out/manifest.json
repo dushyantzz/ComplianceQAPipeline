@@ -1,0 +1,72 @@
+{
+  "C:\\Users\\Shubham\\Desktop\\CORE PROJECT\\ComplianceQAPipeline\\backend\\scripts\\index_documents.py": {
+    "mtime": 1775061539.4258988,
+    "ast_hash": "e531b0364a6e1dc379bdb7481e106038",
+    "semantic_hash": "e531b0364a6e1dc379bdb7481e106038"
+  },
+  "C:\\Users\\Shubham\\Desktop\\CORE PROJECT\\ComplianceQAPipeline\\backend\\src\\api\\server.py": {
+    "mtime": 1775074853.5703993,
+    "ast_hash": "1f60ad7333efeff61e1fbacc50f8ec8b",
+    "semantic_hash": "1f60ad7333efeff61e1fbacc50f8ec8b"
+  },
+  "C:\\Users\\Shubham\\Desktop\\CORE PROJECT\\ComplianceQAPipeline\\backend\\src\\api\\telemetry.py": {
+    "mtime": 1775074537.0842671,
+    "ast_hash": "8103e1467fa6f4cc42b536b0d16534e4",
+    "semantic_hash": "8103e1467fa6f4cc42b536b0d16534e4"
+  },
+  "C:\\Users\\Shubham\\Desktop\\CORE PROJECT\\ComplianceQAPipeline\\backend\\src\\graph\\__init__.py": {
+    "mtime": 1774866534.7406933,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "C:\\Users\\Shubham\\Desktop\\CORE PROJECT\\ComplianceQAPipeline\\backend\\src\\graph\\nodes.py": {
+    "mtime": 1775074038.2597132,
+    "ast_hash": "22ca6a0b166a95b1aac29fec7086f25f",
+    "semantic_hash": "22ca6a0b166a95b1aac29fec7086f25f"
+  },
+  "C:\\Users\\Shubham\\Desktop\\CORE PROJECT\\ComplianceQAPipeline\\backend\\src\\graph\\state.py": {
+    "mtime": 1775074038.2607157,
+    "ast_hash": "2f1f0a643619904e1b4999a10c621177",
+    "semantic_hash": "2f1f0a643619904e1b4999a10c621177"
+  },
+  "C:\\Users\\Shubham\\Desktop\\CORE PROJECT\\ComplianceQAPipeline\\backend\\src\\graph\\workflow.py": {
+    "mtime": 1775060527.5511622,
+    "ast_hash": "0791c45df50fbfa9f37e1a549fc6bb92",
+    "semantic_hash": "0791c45df50fbfa9f37e1a549fc6bb92"
+  },
+  "C:\\Users\\Shubham\\Desktop\\CORE PROJECT\\ComplianceQAPipeline\\backend\\src\\services\\__init__.py": {
+    "mtime": 1774866580.627908,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "C:\\Users\\Shubham\\Desktop\\CORE PROJECT\\ComplianceQAPipeline\\backend\\src\\services\\video_indexer.py": {
+    "mtime": 1775062584.7153933,
+    "ast_hash": "6a9c57772018a6f609184a18cf003772",
+    "semantic_hash": "6a9c57772018a6f609184a18cf003772"
+  },
+  "C:\\Users\\Shubham\\Desktop\\CORE PROJECT\\ComplianceQAPipeline\\main.py": {
+    "mtime": 1775074038.2621684,
+    "ast_hash": "ba7ae19ce9d1c8d4456e705847fa28c1",
+    "semantic_hash": "ba7ae19ce9d1c8d4456e705847fa28c1"
+  },
+  "C:\\Users\\Shubham\\Desktop\\CORE PROJECT\\ComplianceQAPipeline\\pyproject.toml": {
+    "mtime": 1774866940.292114,
+    "ast_hash": "0a6743262c4653e86b3932c7e8670955",
+    "semantic_hash": "0a6743262c4653e86b3932c7e8670955"
+  },
+  "C:\\Users\\Shubham\\Desktop\\CORE PROJECT\\ComplianceQAPipeline\\README.md": {
+    "mtime": 1775075923.8899386,
+    "ast_hash": "13dbaac58240a0f8cf7fe49b9bc35875",
+    "semantic_hash": "13dbaac58240a0f8cf7fe49b9bc35875"
+  },
+  "C:\\Users\\Shubham\\Desktop\\CORE PROJECT\\ComplianceQAPipeline\\backend\\data\\1001a-influencer-guide-508_1.pdf": {
+    "mtime": 1774525726.3235266,
+    "ast_hash": "91a07edeffed1519a7f2eaf863e18df9",
+    "semantic_hash": "91a07edeffed1519a7f2eaf863e18df9"
+  },
+  "C:\\Users\\Shubham\\Desktop\\CORE PROJECT\\ComplianceQAPipeline\\backend\\data\\youtube-ad-specs.pdf": {
+    "mtime": 1774525726.3667998,
+    "ast_hash": "d45dd7fd7cd8f562c2ca7b9ce63aadf6",
+    "semantic_hash": "d45dd7fd7cd8f562c2ca7b9ce63aadf6"
+  }
+}
